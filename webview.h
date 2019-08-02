@@ -159,6 +159,7 @@ WEBVIEW_API int webview_eval(struct webview *w, const char *js);
 WEBVIEW_API int webview_inject_css(struct webview *w, const char *css);
 WEBVIEW_API void webview_set_title(struct webview *w, const char *title);
 WEBVIEW_API void webview_set_fullscreen(struct webview *w, int fullscreen);
+WEBVIEW_API void webview_set_caret_browsing(struct webview *w, int caret_browsing);
 WEBVIEW_API void webview_set_color(struct webview *w, uint8_t r, uint8_t g,
                                    uint8_t b, uint8_t a);
 WEBVIEW_API void webview_dialog(struct webview *w,
@@ -361,6 +362,16 @@ WEBVIEW_API void webview_set_fullscreen(struct webview *w, int fullscreen) {
     gtk_window_fullscreen(GTK_WINDOW(w->priv.window));
   } else {
     gtk_window_unfullscreen(GTK_WINDOW(w->priv.window));
+  }
+}
+
+WEBVIEW_API void webview_set_caret_browsing(struct webview *w, int caret_browsing) {
+  WebKitSettings *settings =
+      webkit_web_view_get_settings(WEBKIT_WEB_VIEW(w->priv.webview));
+  if (caret_browsing) {
+    webkit_settings_set_enable_caret_browsing(settings, true);
+  } else {
+    webkit_settings_set_enable_caret_browsing(settings, false);
   }
 }
 
@@ -1475,6 +1486,10 @@ WEBVIEW_API void webview_set_fullscreen(struct webview *w, int fullscreen) {
   }
 }
 
+WEBVIEW_API void webview_set_caret_browsing(struct webview *w, int caret_browsing) {
+  // Unimplemented
+}
+
 WEBVIEW_API void webview_set_color(struct webview *w, uint8_t r, uint8_t g,
                                    uint8_t b, uint8_t a) {
   HBRUSH brush = CreateSolidBrush(RGB(r, g, b));
@@ -2118,6 +2133,10 @@ WEBVIEW_API void webview_set_fullscreen(struct webview *w, int fullscreen) {
   if (b != fullscreen) {
     objc_msgSend(w->priv.window, sel_registerName("toggleFullScreen:"), NULL);
   }
+}
+
+WEBVIEW_API void webview_set_caret_browsing(struct webview *w, int caret_browsing) {
+  // Unimplemented
 }
 
 WEBVIEW_API void webview_set_color(struct webview *w, uint8_t r, uint8_t g,
